@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generator JP-0457 | Smart Generator Log Tag</title>
+<meta name="description" content="Prototype scan page for the Smart Generator Log Tag, Clean Air 2040, Manipal University Jaipur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #17402f;
+    --forest: #2e6b4f;
+    --mid: #8fcba8;
+    --mint: #e4f2e8;
+    --cream: #faf5ec;
+    --yel: #f2c14e;
+    --yelbg: #fff1c2;
+    --green: #2fb36b;
+    --amber: #f0a62b;
+    --red: #d9453b;
+    --grey: #4f5f57;
+    --line: #dad6cb;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--dark);
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.45;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 0 0 32px; }
+
+  .proto {
+    background: var(--yelbg);
+    border-bottom: 2px solid var(--yel);
+    font-size: 12px;
+    padding: 8px 16px;
+    text-align: center;
+    color: #6b4a00;
+  }
+  header {
+    background: var(--dark);
+    color: #fff;
+    padding: 22px 20px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  header .tag { font-size: 11px; letter-spacing: .08em; color: var(--mid); font-weight: 700; margin: 0 0 6px; }
+  header h1 { font-size: 22px; line-height: 1.2; margin: 0 0 2px; font-weight: 700; }
+  header p { margin: 0; font-size: 13px; color: #bfe3cd; }
+  header svg.leaf { position: absolute; right: -14px; top: -8px; width: 110px; opacity: .9; }
+
+  main { padding: 16px 16px 0; }
+
+  .status {
+    display: flex; align-items: center; gap: 12px;
+    background: #ddf3e6; border: 2px solid var(--green);
+    border-radius: 999px; padding: 12px 18px; margin-bottom: 16px;
+  }
+  .status .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px #bdebd0; flex: none; }
+  .status strong { font-size: 18px; letter-spacing: .02em; }
+  .status small { display: block; font-size: 11px; color: var(--grey); font-weight: 400; letter-spacing: 0; }
+
+  .card { background: #fff; border: 1px solid var(--mid); border-radius: 16px; padding: 6px 16px; margin-bottom: 16px; }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .row:last-child { border-bottom: 0; }
+  .row span { color: var(--grey); }
+  .row b { text-align: right; }
+
+  .air { background: var(--mint); border-radius: 16px; padding: 14px 16px 16px; margin-bottom: 16px; }
+  .air .top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 14px; gap: 8px; }
+  .air .top span { color: var(--grey); }
+  .bar { position: relative; display: flex; height: 8px; border-radius: 4px; overflow: hidden; }
+  .bar i { flex: 1; }
+  .marker { position: absolute; top: -9px; left: 28%; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--dark); transform: translateX(-50%); }
+  .scale { display: flex; justify-content: space-between; font-size: 10px; color: var(--grey); margin-top: 6px; }
+
+  .btn {
+    display: block; width: 100%; font: inherit; font-weight: 700; font-size: 15px;
+    padding: 14px 18px; border-radius: 999px; cursor: pointer; margin-bottom: 12px;
+    border: 2px solid var(--dark); background: transparent; color: var(--dark);
+  }
+  .btn.primary { background: var(--yel); border-color: var(--yel); color: #1f2a25; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; }
+  .btn[aria-expanded="true"] { background: var(--dark); color: #fff; }
+
+  .panel { display: none; background: #fff; border: 1px solid var(--mid); border-radius: 16px; padding: 16px; margin: -2px 0 16px; }
+  .panel.open { display: block; }
+  .panel h2 { font-size: 15px; margin: 0 0 4px; }
+  .panel p.note { font-size: 12px; color: var(--grey); margin: 0 0 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; color: var(--grey); font-weight: 500; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 4px; border-bottom: 1px solid var(--line); }
+  tr.me td { background: #f4faf6; font-weight: 700; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+  .chip i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  .readings { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 0 0 16px; }
+  .readings div { text-align: center; background: var(--mint); border-radius: 10px; padding: 8px 2px; }
+  .readings div.bad { background: #fbe6e3; }
+  .readings b { display: block; font-size: 15px; }
+  .readings span { font-size: 10px; color: var(--grey); }
+
+  label { display: block; font-size: 13px; font-weight: 500; margin: 12px 0 6px; }
+  select, textarea {
+    width: 100%; font: inherit; font-size: 14px; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--mid); background: var(--cream); color: var(--dark);
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  .thanks { display: none; background: #ddf3e6; border-radius: 12px; padding: 12px 14px; font-size: 13px; margin-top: 12px; }
+  .thanks.show { display: block; }
+
+  .login { text-align: center; font-size: 13px; margin: 4px 0 20px; }
+  .login a { color: var(--forest); font-weight: 700; }
+
+  .legend { font-size: 12px; color: var(--grey); display: grid; gap: 6px; margin: 0 0 20px; }
+  .legend div { display: flex; align-items: center; gap: 8px; }
+  .legend i { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+
+  footer { margin-top: 8px; padding: 18px 16px; background: var(--dark); color: #fff; text-align: center; font-size: 12px; }
+  footer b { color: #fff; } footer em { color: var(--yel); font-style: normal; font-weight: 700; }
+  footer small { display: block; color: #bfe3cd; margin-top: 8px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="proto">Prototype page for the Clean Air 2040 project. All data shown is sample data.</div>
+
+  <header>
+    <svg class="leaf" viewBox="0 0 120 120" aria-hidden="true"><path d="M110 8C60 6 18 30 10 112c50-6 94-34 100-104z" fill="#2e6b4f"/><path d="M110 8C70 40 40 70 10 112" stroke="#8fcba8" stroke-width="2" fill="none"/></svg>
+    <p class="tag">SMART GENERATOR LOG TAG</p>
+    <h1>Generator JP-0457</h1>
+    <p>Commercial complex, Ward 12, Jaipur</p>
+  </header>
+
+  <main>
+    <div class="status" role="status">
+      <span class="dot" aria-hidden="true"></span>
+      <strong>COMPLIANT<small>Serviced on time. Emissions within the limit.</small></strong>
+    </div>
+
+    <div class="card">
+      <div class="row"><span>Last service</span><b>14 Sep 2040</b></div>
+      <div class="row"><span>Next service due</span><b>14 Dec 2040</b></div>
+      <div class="row"><span>Run-hours today</span><b>1.2 h</b></div>
+      <div class="row"><span>Emissions grade</span><b>B (within limit)</b></div>
+      <div class="row"><span>Last tag reading</span><b>Today, 10:30 AM</b></div>
+    </div>
+
+    <div class="air">
+      <div class="top"><span>Ward 12 air today</span><b>Satisfactory (78)</b></div>
+      <div class="bar" role="img" aria-label="Air quality bar: Satisfactory">
+        <i style="background:#2fb36b"></i><i style="background:#a9cf4a"></i><i style="background:#f2c14e"></i><i style="background:#e8803a"></i><i style="background:#d9453b"></i>
+        <span class="marker"></span>
+      </div>
+      <div class="scale"><span>Good</span><span>Satisfactory</span><span>Moderate</span><span>Poor</span><span>Very poor</span></div>
+    </div>
+
+    <button class="btn" id="dashBtn" aria-expanded="false" aria-controls="dash">View ward dashboard</button>
+    <section class="panel" id="dash" aria-label="Ward 12 dashboard">
+      <h2>Ward 12 dashboard</h2>
+      <p class="note">Open, ward-level data. Sample values for the prototype.</p>
+      <div class="readings">
+        <div><b>38</b><span>PM2.5</span></div>
+        <div><b>62</b><span>PM10</span></div>
+        <div><b>24</b><span>NO&#8322;</span></div>
+        <div><b>12</b><span>SO&#8322;</span></div>
+        <div class="bad"><b>2.8</b><span>CO ppm</span></div>
+      </div>
+      <table>
+        <thead><tr><th>Generator</th><th>Status</th><th>Run-hrs</th></tr></thead>
+        <tbody>
+          <tr class="me"><td>JP-0457 (this one)</td><td><span class="chip"><i style="background:#2fb36b"></i>Compliant</span></td><td>1.2</td></tr>
+          <tr><td>JP-0412</td><td><span class="chip"><i style="background:#f0a62b"></i>Service due</span></td><td>3.5</td></tr>
+          <tr><td>JP-0388</td><td><span class="chip"><i style="background:#2fb36b"></i>Compliant</span></td><td>0.0</td></tr>
+          <tr><td>JP-0431</td><td><span class="chip"><i style="background:#d9453b"></i>Over limit</span></td><td>6.8</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <button class="btn primary" id="reportBtn" aria-expanded="false" aria-controls="report">Report a problem</button>
+    <section class="panel" id="report" aria-label="Report a problem">
+      <h2>Report a problem</h2>
+      <p class="note">Tell the city about smoke, noise or a damaged tag.</p>
+      <form id="reportForm">
+        <label for="kind">What did you notice?</label>
+        <select id="kind">
+          <option>Black or heavy smoke</option>
+          <option>Strong smell or fumes</option>
+          <option>Loud noise at night</option>
+          <option>Tag missing or damaged</option>
+          <option>Other</option>
+        </select>
+        <label for="msg">Details (optional)</label>
+        <textarea id="msg" placeholder="For example: smoke from the rear of the building at 7 PM"></textarea>
+        <button class="btn primary" type="submit" style="margin:14px 0 0">Send report</button>
+      </form>
+      <div class="thanks" id="thanks" role="status">Thank you. In the real system this report would go to the ward inspector. In this prototype, nothing is actually sent.</div>
+    </section>
+
+    <p class="login">Building owner or inspector? <a href="#" id="loginLink">Log in for full logs</a></p>
+    <div class="thanks" id="loginNote" role="status">Prototype only: the full run-hour logs, service uploads and compliance history would appear here after login.</div>
+
+    <h2 style="font-size:14px;margin:20px 0 10px">What the status light means</h2>
+    <div class="legend">
+      <div><i style="background:#2fb36b"></i>Green: serviced on time, emissions within the limit</div>
+      <div><i style="background:#f0a62b"></i>Amber: service due within 30 days, or a reading near the limit</div>
+      <div><i style="background:#d9453b"></i>Red: above the limit, inspector alerted</div>
+    </div>
+  </main>
+
+  <footer>
+    <b>CLEANER AIR.</b> <em>SMARTER CITIES.</em>
+    <small>Artefact from the Future: Clean Air 2040<br>Manipal University Jaipur | Communication Skills<br>Hardik Arora, Devang Chouhan, Arjun Seth, Divyansh Kumar, Lakshya Jangid</small>
+  </footer>
+</div>
+
+<script>
+  function toggle(btnId, panelId) {
+    var b = document.getElementById(btnId), p = document.getElementById(panelId);
+    b.addEventListener('click', function () {
+      var open = p.classList.toggle('open');
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  toggle('dashBtn', 'dash');
+  toggle('reportBtn', 'report');
+  document.getElementById('reportForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('thanks').classList.add('show');
+  });
+  document.getElementById('loginLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('loginNote').classList.toggle('show');
+  });
+</script>
+</body>
+</html>
